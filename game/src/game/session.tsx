@@ -56,7 +56,8 @@ const Session = ({ mode, language }: SessionProps) => {
 
   // Reset game cache
   GameCache.setup(mode, language, gameInstance?.anagrams);
-  useEffect(() => { GameCache.setup(mode, language, gameInstance?.anagrams) }, [gameInstance]);
+  useEffect(() => { GameCache.setup(mode, language, gameInstance?.anagrams) },
+            [mode, language, gameInstance]);
 
   return (
     <>
