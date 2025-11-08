@@ -50,9 +50,6 @@ export interface GameConfig {
 }
 
 export const GetGameConfig = (mode: Mode, numberOfChars: number) : GameConfig =>  {
-    const sessionConfig = GetSessionConfig(mode);
-    const showRound = sessionConfig.canRepick;
-
     const two_minutes = 2 * 60 * 1000;
     const thirty_seconds = 30 * 1000;
     const totalTime = Math.max(two_minutes, numberOfChars * 1000)

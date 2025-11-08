@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import { Language } from '../language';
 import { SessionConfig, GetSessionConfig, Mode } from '../mode';
-import { random } from '../random';
 
 import * as GameCache from './game-cache';
 import Game, { GameReport } from './game';

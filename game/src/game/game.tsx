@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as faSolid from '@fortawesome/free-solid-svg-icons'
 
 import { Language } from '../language';
-import { Mode, GameConfig, GetGameConfig, GetModeName, SessionConfig, GetSessionConfig } from '../mode';
+import { Mode, GameConfig, GetGameConfig, GetModeName } from '../mode';
 import { SoundContext, endKey, guessKey, randomHitKey, randomMissKey, soundMap, soundPath } from '../sound';
 import * as GameCache from './game-cache';
 
