@@ -110,7 +110,7 @@ const Game = ({ anagrams, mode, language, accScore, round, onRequestNextGame }: 
     );
     // Whether the game has ended.
     const [gameEnd, setGameEnd] = useState<boolean>(
-        () => false
+        () => guessed.indexOf(false) < 0
     );
     // Whether the 'Press to Continue' button should be shown/active. This is
     // separate from `gameEnd` to defer it by a small fraction of time.
