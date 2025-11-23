@@ -206,10 +206,6 @@ export const Input = forwardRef(({ word, onSubmit }: InputProps, ref: React.Forw
         }
     }
 
-    // Focus on the component (for onKey listener) after the initial draw.
-    // https://stackabuse.com/how-to-set-focus-on-element-after-rendering-with-react/
-    // useEffect(() => { if (ref && ref.current) { ref.current.focus(); }}, [ref]);
-
     // --------------------------------------------------------------------------------------------
     // VISUAL
     return (

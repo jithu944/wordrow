@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Language } from '../language';
 import './end-screen.scss';
 
@@ -10,7 +10,9 @@ interface EndScreenProps {
     onClickContinue: () => void;
 }
 
-const EndScreen = ({ language, qualified, score, showContinue, onClickContinue }: EndScreenProps) => {
+const EndScreen = forwardRef(({ language, qualified, score, showContinue, onClickContinue }: EndScreenProps,
+                             ref: React.ForwardedRef<any>
+) => {
     // ------------------------------------------------------------------------
     // TRANSLATIONS
 
@@ -43,11 +45,22 @@ const EndScreen = ({ language, qualified, score, showContinue, onClickContinue }
             throw new Error(`Unknown Language: ${language}`);
     }
 
+    // --------------------------------------------------------------------------------------------
+    // KEY LISTENER
+
+    /** Key listener for all key presses in the game. */
+    const onKey = (e: React.KeyboardEvent) => {
+        switch (e.key) {
+            case "Enter": if (showContinue) { onClickContinue() }; break;
+            default: break;
+        }
+    }
+
     // ------------------------------------------------------------------------
     // VISUAL
 
     return (
-        <div className="EndScreen">
+        <div className="EndScreen" ref={ref} tabIndex={0} onKeyDown={onKey}>
             {qualified ? success_text : failed_text}
 
             <div className="Score">{score.toLocaleString()}</div>
@@ -58,6 +71,6 @@ const EndScreen = ({ language, qualified, score, showContinue, onClickContinue }
             </div>
         </div>
     );
-}
+});
 
 export default EndScreen;

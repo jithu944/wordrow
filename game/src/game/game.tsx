@@ -224,13 +224,23 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
     // --------------------------------------------------------------------------------------------
     // VISUAL
 
-    // Reference for Input component. This allows us to refocus on it.
+    // Reference for Input and EndScreen component. This allows us to refocus on it.
     const inputRef = useRef<any>(null);
+    const endScreenRef = useRef<any>(null);
+
+    // Focus on the component (for onKey listener) after drawing said components.
+    // https://stackabuse.com/how-to-set-focus-on-element-after-rendering-with-react/
+    const focus = () => {
+        if (inputRef.current) { inputRef.current.focus(); }
+        if (endScreenRef.current) { endScreenRef.current.focus(); }
+    };
+
+    useEffect(focus, [inputRef, endScreenRef, gameEnd]);
 
     return (
         <>
             <div className={`Game`}
-                 onClick={() => { if (inputRef.current) { inputRef.current.focus(); }} }
+                 onClick={focus}
             >
                 { gameConfig.addScore && round &&
                     <ScoreBoard endTime={endTime}
@@ -263,6 +273,7 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
                                    score={accScore + currScore}
                                    showContinue={activatePressToContinue}
                                    onClickContinue={actionNextGame}
+                                   ref={endScreenRef}
                         />
                     }
                 </div>
