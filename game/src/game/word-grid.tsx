@@ -1,8 +1,25 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Language } from "../language";
 import Word from "./word";
 
 import './word-grid.scss';
+
+/** Creates a debounced execution of a function `fun` with a `ms` delay.
+ *
+ * https://www.pluralsight.com/guides/re-render-react-component-on-window-resize
+ * */
+function debounce(fun: () => void, ms: number) {
+    let timer: NodeJS.Timeout | undefined = undefined;
+
+    return () => {
+        if (clearTimeout !== null) { clearTimeout(timer); }
+        timer = setTimeout(() => {
+            timer = undefined;
+            fun();
+        }, ms);
+    };
+}
 
 export type WordState = {
     isGuessed: boolean;
@@ -35,9 +52,26 @@ export const WordGrid = ({ language, words, wordStates, showAll }: WordGridProps
         words.map((w, i) => [w, i] as [string, number]).filter(([w, _]) => w.length === word_length)
     );
 
-    // TODO: Respond to changes to the window size:
+    // Respond to changes to the window size:
     //   https://www.pluralsight.com/guides/re-render-react-component-on-window-resize
-    //   https://www.tutsmake.com/react-get-window-height-width/
+
+    const [{ windowHeight, windowWidth }, setDimensions] = React.useState({
+        windowHeight: window.innerHeight,
+        windowWidth: window.innerWidth
+    });
+
+    React.useEffect(() => {
+        const debouncedHandleResize = debounce(() => {
+            console.log("resizeHandler!");
+            setDimensions({
+                windowHeight: window.innerHeight,
+                windowWidth: window.innerWidth
+            });
+        }, 25);
+
+        window.addEventListener('resize', debouncedHandleResize)
+        return () => window.removeEventListener('resize', debouncedHandleResize);
+    });
 
     // Retrieve the last element with class 'Letter' which is a single symbol for the guessed words.
     // If 'null' then this is the first draw and we will just use the default 100% zoom values.
@@ -60,9 +94,9 @@ export const WordGrid = ({ language, words, wordStates, showAll }: WordGridProps
     const anagramsElement = document.getElementsByClassName("Anagrams").item(0);
     const anagramsHeight = anagramsElement
         ? anagramsElement.clientHeight
-        : window.innerHeight - scoreboardHeight - bottomHeight;
+        : windowHeight - scoreboardHeight - bottomHeight;
 
-    const maxColumns = Math.floor(window.innerWidth / wordWidth);
+    const maxColumns = Math.floor(windowWidth / wordWidth);
     const maxInColumn = anagramsHeight / wordHeight;
 
     if (maxColumns <= wordColumns.length || wordColumns.some((c) => maxInColumn <= c.length)) {
