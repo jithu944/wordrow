@@ -46,13 +46,9 @@
         }
 
         color: $light-text-color;
-
-        &.Hint {
-            background-color: $light-hint;
-        }
     }
 
-    &.Guessed .Letter {
+    &.Guessed .Letter:not(.Hint) {
         background-color: $light-good;
 
         @keyframes WordRevealLight {
@@ -69,23 +65,15 @@
 
         animation-name: WordRevealLight;
         animation-duration: 0.1s;
-
-        &.Hint {
-            background-color: $light-hint;
-        }
     }
 }
 
 .DarkMode .Word {
     .Letter {
         color: $dark-text-color;
-
-        &.Hint {
-            background-color: $dark-hint;
-        }
     }
 
-    &.Guessed .Letter {
+    &.Guessed .Letter:not(.Hint) {
         background-color: $dark-good;
 
         @keyframes WordRevealDark {
@@ -102,9 +90,5 @@
 
         animation-name: WordRevealDark;
         animation-duration: 0.2s;
-
-        &.Hint {
-            background-color: $dark-hint;
-        }
     }
 }
