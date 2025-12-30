@@ -36,7 +36,7 @@ build:
 #     Build React application.
 # ---------------------------------------------------------------------------- #
 build/game:
-	cd game && npm install
+	cd game && npm ci
 	cd game && npm run build
 	mv ./game/build ./build
 
