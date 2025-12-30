@@ -1,4 +1,4 @@
-.PHONY: build build/game build/game_gen build/dict
+.PHONY: build build/game build/dict.cpp build/dict
 
 MAKE_FLAGS=-j $$(nproc)
 
@@ -6,15 +6,15 @@ MAKE_FLAGS=-j $$(nproc)
 #     Complete build script.
 # ---------------------------------------------------------------------------- #
 build:
-    # Build React Page
+  # Build React Page
 	make $(MAKE_FLAGS) clean
 	make $(MAKE_FLAGS) build/game
-	
-    # Remove Developer games
+
+  # Remove Developer games
 	rm -rf build/dict/**
 
-    # Build Dictionaries
-	make $(MAKE_FLAGS) build/game_gen
+  # Build Dictionaries
+	make $(MAKE_FLAGS) build/dict.cpp
 
 	make $(MAKE_FLAGS) build/dict DICT=da-DK
 	mv out build/dict/da-DK
@@ -24,14 +24,14 @@ build:
 
 	make $(MAKE_FLAGS) build/dict DICT=en-US
 	mv out build/dict/en-US
-	
+
 	make $(MAKE_FLAGS) build/dict DICT=es-ES
 	mv out build/dict/es-ES
 
     # Add CNAME record
     # https://stackoverflow.com/questions/9082499/custom-domain-for-github-project-pages
 	echo "wordrow.io" > build/CNAME
-	
+
 # ---------------------------------------------------------------------------- #
 #     Build React application.
 # ---------------------------------------------------------------------------- #
@@ -43,13 +43,13 @@ build/game:
 # ---------------------------------------------------------------------------- #
 #     Build Anatree and Dictionary parser.
 # ---------------------------------------------------------------------------- #
-build/game_gen:
-	mkdir -p game_gen/build/
-	cd game_gen/build/ && cmake -D CMAKE_BUILD_TYPE=Debug \
+build/dict.cpp:
+	mkdir -p dict.cpp/build/
+	cd dict.cpp/build/ && cmake -D CMAKE_BUILD_TYPE=Debug \
                               -D CMAKE_C_FLAGS=$(O2_FLAGS) \
                               -D CMAKE_CXX_FLAGS=$(O2_FLAGS) \
                         ..
-	cd game_gen/build/ && make $(MAKE_FLAGS) anagrams
+	cd dict.cpp/build/ && make $(MAKE_FLAGS) anagrams
 
 # ---------------------------------------------------------------------------- #
 #     Build .json files for the games for the given language.
@@ -61,7 +61,7 @@ build/dict:
 	mkdir -p out/
 	rm -f ./out/*.json
 
-	./game_gen/build/src/anagrams $(MIN) $(MAX) ./dict/$(DICT)/$(DICT).txt
+	./dict.cpp/build/src/anagrams $(MIN) $(MAX) ./dict/$(DICT)/$(DICT).txt
 
 # ---------------------------------------------------------------------------- #
 #     Remove all build files.
@@ -69,3 +69,5 @@ build/dict:
 clean:
 	rm -rf ./build
 	rm -rf ./out
+
+	cd dict.cpp && make $(MAKE_FLAGS) clean clean/out

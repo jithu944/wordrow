@@ -15,7 +15,7 @@ The project consists of the following three folders:
   A (modified) copy of dictionaries for certain languages. These are used with
   the program in *game_gen* to generate all of the games.
 
-- **game_gen**:
+- **dict.cpp**:
   A C++ application that generates the *json* file of all games efficiently with
   the [*Anatree* data structure](http://github.com/ssoelvsten/anatree).
 
