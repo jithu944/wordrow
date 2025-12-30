@@ -250,19 +250,16 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
 
     // Reference for Input, EndScreen, and PopUp components. This allows us to refocus on it.
     const inputRef = useRef<any>(null);
-    const endScreenRef = useRef<any>(null);
     const popupRef = useRef<any>(null);
 
     // Focus on the component (for onKey listener) after drawing said components.
     // https://stackabuse.com/how-to-set-focus-on-element-after-rendering-with-react/
     const focus = () => {
-        console.log(inputRef.current, endScreenRef.current, popupRef.current);
         if (popupRef.current) { popupRef.current.focus(); return; }
-        if (inputRef.current) { inputRef.current.focus(); }
-        if (endScreenRef.current) { endScreenRef.current.focus(); }
+        if (inputRef.current) { inputRef.current.focus(); return; }
     };
 
-    useEffect(focus, [inputRef, endScreenRef, popupRef, showPopup, gameEnd]);
+    useEffect(focus, [inputRef, popupRef, showPopup, gameEnd]);
 
     return (
         <>
@@ -300,7 +297,7 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
                                    score={accScore + currScore}
                                    showContinue={activatePressToContinue}
                                    onClickContinue={actionNextGame}
-                                   ref={endScreenRef}
+                                   ref={inputRef}
                         />
                     }
                 </div>
