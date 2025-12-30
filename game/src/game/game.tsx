@@ -156,6 +156,7 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
 
     useEffect(() => {
         play({ id: 'button' });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showHintPopup]);
 
     // Whether the gameEnd pop-up is shown.
@@ -165,6 +166,7 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
 
     useEffect(() => {
         play({ id: 'button' });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showEndPopup]);
 
     const showPopup = showHintPopup || showEndPopup;
