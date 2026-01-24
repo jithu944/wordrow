@@ -90,7 +90,7 @@ export function clear(mode: Mode, language: Language, id: string) : void {
     for (let key of Object.keys(ls_keys)) {
         localStorage.removeItem(key)
     }
-    localStorage.setItem(getLSKeys(mode, language).id, id);
+    localStorage.setItem(ls_keys.id, id);
     const empty = [id, new Value(undefined, [])] as Entry;
     dailyCache[language] = empty
 }
@@ -99,7 +99,7 @@ export function clear(mode: Mode, language: Language, id: string) : void {
  *  different one than the one that was cached. */
 export function setup(mode: Mode, language: Language, words: string[] | undefined) : void {
     if (!words) { return; }
-    if (mode !== Mode.DAILY || !words) { return; }
+    if (mode !== Mode.DAILY) { return; }
 
     const gameId = words[words.length-1];
 
