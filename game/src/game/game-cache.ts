@@ -22,7 +22,7 @@ class Value {
 type Entry = [string, Value];
 
 /** Cache for the daily challenge */
-const dailyCache: { [lang in Language]: [string, Value] | undefined} = {
+const dailyCache: { [lang in Language]: Entry | undefined} = {
     [Language.DK]: undefined,
     [Language.DE]: undefined,
     [Language.EN]: undefined,
