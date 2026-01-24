@@ -96,6 +96,11 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
     /** Whether all words have been guessed. */
     const guessedAll = wordStates.find(({isGuessed}) => !isGuessed) === undefined
 
+    // Time at which the game was started.
+    const [startTime] = useState<number>(
+        () => GameCache.get(mode, language)?.startTime || new Date().getTime()
+    );
+
     // Time at which the game will end (if no additional time is obtained)
     const [endTime, setEndTime] = useState<number>(
         () => new Date().getTime() + gameConfig.initialTime
@@ -142,6 +147,13 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
     useEffect(() => {
         if (!gameEnd) { return; }
         play({ id: endKey(qualified) });
+
+        if (endTime === Infinity) {
+            const now = new Date().getTime();
+            GameCache.setEndTime(mode, language, now);
+            setEndTime(now);
+        }
+
         setTimeout(() => setActivatePressToContinue(true), 2000 /* 2s */);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gameEnd]);
@@ -268,16 +280,16 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
             <div className={`Game`}
                  onClick={focus}
             >
-                { gameConfig.addScore && round &&
-                    <ScoreBoard endTime={endTime}
-                                gameEnd={gameEnd}
-                                language={language}
-                                qualified={qualified}
-                                score={accScore + currScore}
-                                round={round}
-                                onTimeout={onTimeout}
-                    />
-                }
+                <ScoreBoard startTime={startTime}
+                            endTime={endTime}
+                            gameEnd={gameEnd}
+                            mode={mode}
+                            language={language}
+                            qualified={qualified}
+                            score={accScore + currScore}
+                            round={round}
+                            onTimeout={onTimeout}
+                />
 
                 <WordGrid language={language}
                           words={words}

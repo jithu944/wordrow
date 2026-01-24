@@ -11,10 +11,17 @@ type Guess = { word: string, hints: string };
 class Value {
     hints: [number, number] | undefined;
     guessed: Guess[];
+    startTime: number;
+    endTime: number;
 
-    constructor(hints: [number, number] | undefined, guessed: Guess[]) {
+    constructor(hints: [number, number] | undefined,
+                guessed: Guess[],
+                startTime: number,
+                endTime: number) {
         this.hints = hints;
         this.guessed = guessed;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 };
 
@@ -41,6 +48,8 @@ const getLSKeys = (mode: Mode, language: Language) => {
         id: `${base}:key`,
         hints: `${base}:hints`,
         guessed: `${base}:guessed`,
+        startTime: `${base}:startTime`,
+        endTime: `${base}:endTime`,
     };
 };
 
@@ -91,8 +100,11 @@ export function clear(mode: Mode, language: Language, id: string) : void {
         localStorage.removeItem(key)
     }
     localStorage.setItem(ls_keys.id, id);
-    const empty = [id, new Value(undefined, [])] as Entry;
-    dailyCache[language] = empty
+
+    const startTime = new Date().getTime();
+    localStorage.setItem(ls_keys.startTime, startTime.toString());
+    const empty = [id, new Value(undefined, [], startTime, Infinity)] as Entry;
+    dailyCache[language] = empty;
 }
 
 /** Setup the cache for a certain game mode and language. This flushes the cache if the game is a
@@ -122,8 +134,14 @@ export function setup(mode: Mode, language: Language, words: string[] | undefine
             return clear(mode, language, gameId);
         }
 
+        const ls_startTime = localStorage.getItem(ls_keys.startTime);
+        const startTime = Number(ls_startTime);
+
+        const ls_endTime = localStorage.getItem(ls_keys.endTime);
+        const endTime = ls_endTime ? Number(ls_endTime) : Infinity;
+
         // Use the value from storage.
-        dailyCache[language] = [gameId, new Value(hints, guessed)];
+        dailyCache[language] = [gameId, new Value(hints, guessed, startTime, endTime)];
     }
 };
 
@@ -164,5 +182,19 @@ export function pushGuess(mode: Mode, language: Language, guess: Guess) : void {
     const e = kv[1];
     e.guessed.push(guess);
     localStorage.setItem(getLSKeys(mode, language).guessed, toLSGuessed(e.guessed));
+}
 
+/** Add a (new?) end time for the game. */
+export function setEndTime(mode: Mode, language: Language, endTime: number) : void {
+    let kv;
+    switch (mode) {
+    case Mode.DAILY: kv = dailyCache[language]; break;
+    default:
+        return;
+    }
+    if (!kv) { throw Error("Key-value pair is undefined"); }
+
+    const e = kv[1];
+    e.endTime = endTime;
+    localStorage.setItem(getLSKeys(mode, language).endTime, endTime.toString());
 }

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { Mode } from "../mode";
 import { Language } from "../language";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as faSolid from '@fortawesome/free-solid-svg-icons'
 import * as faRegular from '@fortawesome/free-regular-svg-icons'
+
 import './scoreboard.scss';
 
 export interface ScoreBoardProps {
+    startTime: number;
     endTime: number;
     gameEnd: boolean;
+    mode: Mode;
     language: Language;
     qualified: boolean;
     score: number;
-    round: number;
+    round: number | undefined;
     onTimeout: () => void;
 };
 
-const ScoreBoard = ({ endTime, gameEnd, language, qualified, round, score, onTimeout }: ScoreBoardProps) => {
-    const isTimed: boolean = endTime !== Infinity && !isNaN(endTime);
+const ScoreBoard = ({ startTime, endTime, gameEnd, mode, language, qualified, round, score, onTimeout }: ScoreBoardProps) => {
+    const isTimed: boolean = mode === Mode.TIMED || mode === Mode.BLITZ;
 
     // --------------------------------------------------------------------------------------------
     // CLOCK TICKING AND FORMATTING
     const [currTime, setCurrTime] = useState(() => new Date().getTime());
 
-    const formatTimeleft = () => {
+    const formatTimer = () => {
         const timeLeft = endTime - currTime;
         if (timeLeft < 0) return "00:00:000";
 
@@ -36,13 +40,27 @@ const ScoreBoard = ({ endTime, gameEnd, language, qualified, round, score, onTim
             }`;
     };
 
-    useEffect(() => {
-        if (!isTimed || gameEnd) return;
+    const formatClock = () => {
+        const timeSpent = Math.min(endTime, currTime) - startTime;
 
+        const seconds = Math.floor((timeSpent / 1000) % 60);
+        const minutes = Math.floor(((timeSpent / 1000) / 60) % 60);
+        const hours   = Math.floor(timeSpent / 1000 / 60 / 60);
+
+        return `${hours.toLocaleString(undefined, { minimumIntegerDigits: 2 })
+            }:${minutes.toLocaleString(undefined, { minimumIntegerDigits: 2 })
+            }:${seconds.toLocaleString(undefined, { minimumIntegerDigits: 2 })
+            }`;
+    };
+
+    useEffect(() => {
+        if (gameEnd) return;
+
+        const tickRate = isTimed ? 50 : 1000;
         const timerId = setInterval(() => {
             const tick = new Date().getTime();
             setCurrTime(tick);
-        }, 50);
+        }, tickRate);
         return () => clearInterval(timerId);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,10 +80,12 @@ const ScoreBoard = ({ endTime, gameEnd, language, qualified, round, score, onTim
 
     // --------------------------------------------------------------------------------------------
     // ROUND FORMATTING
+    const displayRound = mode !== Mode.DAILY;
     const roundText = round?.toLocaleString(language);
 
     // --------------------------------------------------------------------------------------------
     // SCORE FORMATTING
+    const displayScore = mode !== Mode.DAILY;
     const scoreText = Math.round(score).toLocaleString(language, { minimumIntegerDigits: 7 });
 
     // --------------------------------------------------------------------------------------------
@@ -73,16 +93,21 @@ const ScoreBoard = ({ endTime, gameEnd, language, qualified, round, score, onTim
     return (
         <div className="ScoreBoard">
             {isTimed &&
-                <div className={`Time ${timeAlarm ? "Alarm" : ""}`}>{formatTimeleft()}</div>
+                <div className={`Time ${timeAlarm ? "Alarm" : ""}`}>{formatTimer()}</div>
             }
-            <div className="RoundNumber">
-                {isTimed && <div className="Bar">|</div>}
-                <FontAwesomeIcon icon={qualified ? faSolid.faFlag : faRegular.faFlag} flip={"horizontal"} />
-                {roundText}
-                <FontAwesomeIcon icon={qualified ? faSolid.faFlag : faRegular.faFlag} />
-                <div className="Bar">|</div>
-            </div>
-            <div className="Score"> {scoreText} </div>
+            {!isTimed &&
+                <div className={"Time"}>{formatClock()}</div>
+            }
+            {displayRound &&
+                <div className="RoundNumber">
+                    <div className="Bar">|</div>
+                    <FontAwesomeIcon icon={qualified ? faSolid.faFlag : faRegular.faFlag} flip={"horizontal"} />
+                    {round && roundText}
+                    <FontAwesomeIcon icon={qualified ? faSolid.faFlag : faRegular.faFlag} />
+                    <div className="Bar">|</div>
+                </div>
+            }
+            {displayScore && <div className="Score"> {scoreText} </div>}
         </div>
     );
 }
