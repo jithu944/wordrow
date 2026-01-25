@@ -50,7 +50,7 @@ const getLSKeys = (mode: Mode, language: Language) => {
         guessed: `${base}:guessed`,
         startTime: `${base}:startTime`,
         endTime: `${base}:endTime`,
-    };
+    } as { [s in string]: string };
 };
 
 function toLSHints(h: [number, number]) : string {
@@ -97,7 +97,7 @@ export function clear(mode: Mode, language: Language, id: string) : void {
 
     const ls_keys = getLSKeys(mode, language);
     for (let key of Object.keys(ls_keys)) {
-        localStorage.removeItem(key)
+        localStorage.removeItem(ls_keys[key]);
     }
     localStorage.setItem(ls_keys.id, id);
 
