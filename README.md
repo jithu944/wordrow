@@ -4,7 +4,7 @@ Wordrow is a reimplementation of the classic internet puzzle game [Text
 Twist](https://texttwist.info) as a static webpage with a modern and sleek design.
 
 <div align="center">
-  <img src="/example.jpg"
+  <img src="/example.2026.png"
        alt="Image of game"
        style="max-width:32rem; width:32rem;" />
 </div>
