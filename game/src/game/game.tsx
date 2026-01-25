@@ -103,7 +103,8 @@ const Game = ({ words, mode, language, accScore, round, onRequestNextGame }: Gam
 
     // Time at which the game will end (if no additional time is obtained)
     const [endTime, setEndTime] = useState<number>(
-        () => new Date().getTime() + gameConfig.initialTime
+        () => GameCache.get(mode, language)?.endTime
+           || (new Date().getTime() + gameConfig.initialTime)
     );
 
     // Whether the game has ended.
