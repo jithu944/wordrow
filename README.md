@@ -12,18 +12,18 @@ Twist](https://texttwist.info) as a static webpage with a modern and sleek desig
 The project consists of the following three folders:
 
 - **dict**
-  A (modified) copy of dictionaries for certain languages. These are used with
-  the program in *game_gen* to generate all of the games.
+  A (modified) copy of dictionaries for certain languages.
 
 - **dict.cpp**:
-  A C++ application that generates the *json* file of all games efficiently with
-  the [*Anatree* data structure](http://github.com/ssoelvsten/anatree).
+  C++ applications to process and generate the *dict/* folder. In particular,
+  this generates the json files used by the *game/* efficiently via the
+  [*Anatree* data structure](http://github.com/ssoelvsten/anatree).
 
 - **game**
-  The source files for the game logic run as a static React website in the
-  browser.
+  The game itself. This is implemented as a static React application.
 
-These are precompiled into the final game served on the *gh-pages* branch.
+These are precompiled into the final game which is served on the *gh-pages*
+branch.
 
 ## Comparison
 
