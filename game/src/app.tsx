@@ -37,7 +37,7 @@ const App = () => {
   const [sound, setSound] = useState<boolean>(
     () => {
       // Consult local storage for state from previous page
-      const ls_res = localStorage.getItem(LS_KEYS.DarkMode);
+      const ls_res = localStorage.getItem(LS_KEYS.Sound);
       if (ls_res) { return ls_res === "true"; }
 
       // Ask browser, whether it wants to use sound
